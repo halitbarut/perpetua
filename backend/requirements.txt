@@ -4,4 +4,10 @@ sqlalchemy
 python-dotenv
 passlib[bcrypt]
 python-jose[cryptography]
-openai
+pydantic-settings
+google-generativeai
+psycopg2-binary
+pydantic
+pydantic[email]
+bcrypt
+python-multipart
