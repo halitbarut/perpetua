@@ -11,3 +11,4 @@ pydantic
 pydantic[email]
 bcrypt
 python-multipart
+alembic

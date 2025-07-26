@@ -23,9 +23,13 @@ def register_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Bu e-posta adresine sahip bir kullanıcı zaten mevcut.",
         )
-
+    user_by_username = crud_user.get_user_by_username(db, username=user_in.username)
+    if user_by_username:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Bu kullanıcı adı zaten alınmış.",
+        )
     new_user = crud_user.create_user(db=db, user=user_in)
-
     return new_user
 
 
