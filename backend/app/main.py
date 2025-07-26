@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.v1.api import api_router
-from app.db.models import user
+from app.db.models import user, user_mistake
 from app.db.base import Base, engine
 
 Base.metadata.create_all(bind=engine)
