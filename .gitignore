@@ -1,79 +1,57 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+# .gitignore (NİHAİ VE EN DOĞRU HALİ)
 
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib60/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual Environment
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak
-venv.bak
-
-# Database
-*.sqlite3
-*.sqlite3-journal
-
-# OpenAI API Key file (if separate)
-openai_api_key.txt
-
-# IDE configuration files
+# ####################### #
+#   GENEL Yoksaymalar     #
+# ####################### #
+# IDE/Editör Konfigürasyonları
 .idea/
 .vscode/
 
-# --- Node / Vue ---
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Dependency directories
-node_modules/
-
-# Build output
-dist/
-dist-ssr/
-*.local
-
-# Environment variables
-.env.local
-.env.*.local
-
-# --- OS Specific ---
-# macOS
+# İşletim Sistemi Dosyaları
 .DS_Store
-.AppleDouble
-.LSOverride
-
-# Windows
 Thumbs.db
-ehthumbs.db
+
+
+# ####################### #
+#   BACKEND (Python)      #
+# ####################### #
+# Sanal Ortam
+/backend/.venv/
+/backend/venv/
+
+# Python Cache
+**/__pycache__/
+*.py[cod]
+
+# Veritabanı Dosyaları
+/backend/*.db
+/backend/*.sqlite
+/backend/*.sqlite3
+
+# Ortam Değişkenleri
+/backend/.env
+
+
+# ####################### #
+#   FRONTEND (Vue)        #
+# ####################### #
+# Bağımlılıklar
+/frontend/node_modules/
+
+# Üretim (Build) Çıktısı
+/frontend/dist/
+/frontend/dist-ssr/
+
+# Log Dosyaları
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/pnpm-debug.log*
+
+# Ortam Değişkenleri Dosyaları
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.*.local
+
+# Vite Cache
+/frontend/.vite/
