@@ -57,7 +57,7 @@ const handleRegister = async () => {
 </template>
 
 <style scoped>
-/* Stiller Login.vue ile aynı olduğu için kopyalayabiliriz veya global yapabiliriz */
+/* Stiller LoginView.vue ile aynı olduğu için kopyalayabiliriz veya global yapabiliriz */
 /* Şimdilik kolaylık olması için kopyalıyorum */
 .auth-page {
   display: flex;

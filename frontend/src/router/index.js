@@ -7,17 +7,23 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/Login.vue'),
+      component: () => import('../views/LoginView.vue'),
     },
     {
       path: '/register',
       name: 'register',
-      component: () => import('../views/Register.vue'),
+      component: () => import('../views/RegisterView.vue'),
     },
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('../views/Dashboard.vue'),
+      component: () => import('../views/DashboardView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/exercise/:type',
+      name: 'exercise',
+      component: () => import('../views/ExerciseView.vue'),
       meta: { requiresAuth: true },
     },
     {

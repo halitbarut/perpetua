@@ -53,5 +53,18 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('user');
       router.push('/login');
     },
+    async fetchCurrentUser() {
+      if (this.token) {
+        try {
+          const { data } = await apiClient.get('/users/me');
+          this.user = data;
+          localStorage.setItem('user', JSON.stringify(data));
+          console.log('User data refreshed:', data);
+        } catch (error) {
+          console.error('Failed to refresh user data:', error);
+          this.logout();
+        }
+      }
+    },
   },
 });
