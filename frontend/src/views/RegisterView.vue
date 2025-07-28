@@ -46,7 +46,7 @@ const handleRegister = async () => {
           <input type="password" id="password" v-model="password" required />
         </div>
         <div v-if="error" class="error-message">{{ error }}</div>
-        <button type="submit" class="btn">Kayıt Ol</button>
+        <button type="submit" class="btn btn-primary">Kayıt Ol</button>
       </form>
       <p>
         Zaten bir hesabın var mı?
@@ -56,51 +56,49 @@ const handleRegister = async () => {
   </div>
 </template>
 
+<!-- LoginView.vue ve RegisterView.vue için yeni <style> -->
 <style scoped>
-/* Stiller LoginView.vue ile aynı olduğu için kopyalayabiliriz veya global yapabiliriz */
-/* Şimdilik kolaylık olması için kopyalıyorum */
 .auth-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f2f5;
 }
 .auth-form {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: var(--surface-color);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
   width: 100%;
   max-width: 400px;
   text-align: center;
 }
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   text-align: left;
 }
 label {
   display: block;
   margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 input {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.btn {
-  width: 100%;
-  padding: 0.75rem;
-  border: none;
-  background-color: #5c6ac4;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
   font-size: 1rem;
 }
+input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
+}
 .error-message {
-  color: red;
+  color: var(--danger-color);
   margin-bottom: 1rem;
+}
+p {
+  margin-top: 1.5rem;
 }
 </style>

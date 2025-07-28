@@ -1,3 +1,4 @@
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from app.db.models import user as model
 from app.schemas import user as schema
@@ -20,3 +21,6 @@ def create_user(db: Session, user: schema.UserCreate):
 
 def get_user_by_username(db: Session, username: str):
     return db.query(model.User).filter(model.User.username == username).first()
+
+def get_users_sorted_by_score(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(model.User).order_by(desc(model.User.weekly_score)).offset(skip).limit(limit).all()
