@@ -24,6 +24,7 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
         {{
           "questions": [
             {{
+              "type": "grammar",
               "sentence_template": "She ___ an apple.",
               "word_bank": ["eat", "eats", "ate", "eating"],
               "correct_word": "eats"
@@ -38,6 +39,74 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
 
         Şimdi {level} seviyesi için 5 soruluk listeyi oluştur.
         """
+
+    if exercise_type == "dialogue":
+        return f"""
+        Sen, A1 seviyesinde İngilizce öğreten bir yapay zekasın.
+        Görevin, A1 seviyesi için "diyalog tamamlama" formatında TEK BİR soru oluşturmak.
+
+        KURALLAR:
+        1. İki kişi arasında geçen, 2-3 satırlık basit bir diyalog oluştur. Diyalogun son cümlesi eksik olmalı.
+        2. Bu eksik cümleyi tamamlayacak bir soru sor.
+        3. Soru için 4 adet mantıklı seçenek (1 doğru, 3 yanlış) üret.
+        4. Çıktı olarak SADECE ve SADECE bir JSON objesi döndür.
+
+        ÖRNEK ÇIKTI FORMATI:
+        {{
+          "questions": [
+            {{
+              "type": "dialogue",
+              "dialogue": [
+                {{"speaker": "Shopkeeper", "line": "Hello, can I help you?"}},
+                {{"speaker": "Customer", "line": "Yes, please. I'd like an apple."}}
+              ],
+              "question": "What should the shopkeeper say next?",
+              "options": [
+                "Here you are.",
+                "I am a doctor.",
+                "My name is John.",
+                "Thank you."
+              ],
+              "correct_answer": "Here you are."
+            }}
+          ]
+        }}
+
+        Şimdi {level} seviyesi için 1 diyalog sorusu içeren listeyi oluştur.
+        """
+
+    if exercise_type == "word_matching":
+        # TODO: Konu listesini daha dinamik hale getirebiliriz.
+        topics = ["Fruits", "Animals", "Family Members", "Colors", "Jobs"]
+        import random
+        chosen_topic = random.choice(topics)
+
+        return f"""
+        Sen, A1 seviyesinde İngilizce öğreten bir yapay zekasın.
+        Görevin, A1 seviyesi için "{chosen_topic}" konusuyla ilgili bir "kelime eşleştirme" alıştırması oluşturmak.
+
+        KURALLAR:
+        1. "{chosen_topic}" konusuyla ilgili 5 adet basit İngilizce kelime seç.
+        2. Bu 5 kelimenin Türkçe karşılıklarını bul.
+        3. Çıktı olarak SADECE ve SADECE bir JSON objesi döndür.
+        4. JSON objesi "topic", "words" (İngilizce kelimeler listesi) ve "meanings" (Türkçe karşılıklar listesi) alanlarını içermelidir.
+        5. ÖNEMLİ: "words" ve "meanings" listelerindeki sıralamayı BİRBİRİNDEN FARKLI, yani tamamen karışık yap.
+
+        ÖRNEK ÇIKTI FORMATI:
+        {{
+          "questions": [
+            {{
+              "type": "word_matching",
+              "topic": "Fruits",
+              "words": ["Apple", "Banana", "Orange", "Grape", "Strawberry"],
+              "meanings": ["Muz", "Portakal", "Çilek", "Elma", "Üzüm"]
+            }}
+          ]
+        }}
+
+        Şimdi "{chosen_topic}" konusu için 1 kelime eşleştirme seti içeren listeyi oluştur.
+        """
+
     return None
 
 def create_exercise_from_ai(exercise_type: str):
