@@ -43,15 +43,16 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
     if exercise_type == "dialogue":
         return f"""
         Sen, A1 seviyesinde İngilizce öğreten bir yapay zekasın.
-        Görevin, A1 seviyesi için "diyalog tamamlama" formatında TEK BİR soru oluşturmak.
+        Görevin, A1 seviyesi için "diyalog tamamlama" formatında 5 ADET FARKLI soru oluşturmak.
 
         KURALLAR:
-        1. İki kişi arasında geçen, 2-3 satırlık basit bir diyalog oluştur. Diyalogun son cümlesi eksik olmalı.
-        2. Bu eksik cümleyi tamamlayacak bir soru sor.
-        3. Soru için 4 adet mantıklı seçenek (1 doğru, 3 yanlış) üret.
+        1. Birbirinden bağımsız, 5 adet diyalog sorusu oluştur.
+        2. Her soru için, iki kişi arasında geçen 2-3 satırlık basit bir diyalog oluştur. Diyalogun son cümlesi eksik olmalı.
+        3. Her soru için 4 adet mantıklı seçenek (1 doğru, 3 yanlış) üret.
         4. Çıktı olarak SADECE ve SADECE bir JSON objesi döndür.
+        5. ÇOK ÖNEMLİ: "dialogue" alanı, her biri "speaker" ve "line" anahtarlarına sahip SÖZLÜKLERDEN (dictionary/object) oluşan bir LİSTE olmalıdır. BASİT METİN LİSTESİ (list of strings) KESİNLİKLE KULLANMA.
 
-        ÖRNEK ÇIKTI FORMATI:
+        ÖRNEK ÇIKTI FORMATI (BU FORMATA TAM OLARAK UYMALISIN):
         {{
           "questions": [
             {{
@@ -72,25 +73,24 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
           ]
         }}
 
-        Şimdi {level} seviyesi için 1 diyalog sorusu içeren listeyi oluştur.
+        Şimdi {level} seviyesi için, yukarıdaki kurallara ve formata HARFİYEN uyarak 5 diyalog sorusu içeren listeyi oluştur.
         """
 
     if exercise_type == "word_matching":
-        # TODO: Konu listesini daha dinamik hale getirebiliriz.
-        topics = ["Fruits", "Animals", "Family Members", "Colors", "Jobs"]
+        topics = ["Fruits", "Animals", "Family Members", "Colors", "Jobs", "Food", "Clothes"]
         import random
-        chosen_topic = random.choice(topics)
+        chosen_topics = random.sample(topics, 5)
 
         return f"""
         Sen, A1 seviyesinde İngilizce öğreten bir yapay zekasın.
-        Görevin, A1 seviyesi için "{chosen_topic}" konusuyla ilgili bir "kelime eşleştirme" alıştırması oluşturmak.
+        Görevin, A1 seviyesi için "kelime eşleştirme" formatında 5 ADET FARKLI set oluşturmak.
 
         KURALLAR:
-        1. "{chosen_topic}" konusuyla ilgili 5 adet basit İngilizce kelime seç.
-        2. Bu 5 kelimenin Türkçe karşılıklarını bul.
-        3. Çıktı olarak SADECE ve SADECE bir JSON objesi döndür.
-        4. JSON objesi "topic", "words" (İngilizce kelimeler listesi) ve "meanings" (Türkçe karşılıklar listesi) alanlarını içermelidir.
-        5. ÖNEMLİ: "words" ve "meanings" listelerindeki sıralamayı BİRBİRİNDEN FARKLI, yani tamamen karışık yap.
+        1. Sırasıyla şu konular için setler oluştur: {', '.join(chosen_topics)}.
+        2. Her konu için 4 adet basit İngilizce kelime ve Türkçe karşılıklarını bul.
+        3. ÇOK ÖNEMLİ: Çıktı olarak, "words" ve "meanings" listelerini BİRBİRİNDEN FARKLI, yani tamamen karışık sıralarda ver.
+        4. Ek olarak, "correct_pairs" adında bir SÖZLÜK (dictionary/object) oluştur. Bu sözlükte anahtar (key) İngilizce kelime, değer (value) ise onun doğru Türkçe karşılığı olmalıdır.
+        5. Çıktı olarak SADECE ve SADECE bir JSON objesi döndür.
 
         ÖRNEK ÇIKTI FORMATI:
         {{
@@ -98,13 +98,19 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
             {{
               "type": "word_matching",
               "topic": "Fruits",
-              "words": ["Apple", "Banana", "Orange", "Grape", "Strawberry"],
-              "meanings": ["Muz", "Portakal", "Çilek", "Elma", "Üzüm"]
+              "words": ["Apple", "Banana", "Orange", "Grape"],
+              "meanings": ["Muz", "Portakal", "Elma", "Üzüm"],
+              "correct_pairs": {{
+                "Apple": "Elma",
+                "Banana": "Muz",
+                "Orange": "Portakal",
+                "Grape": "Üzüm"
+              }}
             }}
           ]
         }}
 
-        Şimdi "{chosen_topic}" konusu için 1 kelime eşleştirme seti içeren listeyi oluştur.
+        Şimdi belirtilen konular için, "correct_pairs" cevap anahtarını da içeren 5 kelime eşleştirme seti oluştur.
         """
 
     return None
