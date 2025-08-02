@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Literal
 
 from app import services
+from app.db.models import user
 from app.schemas import exercise as exercise_schema
 from app.db import models as user_model
 from app.crud import crud_user
@@ -37,7 +38,7 @@ def get_new_exercise(
 def evaluate_exercise(
     payload: exercise_schema.EvaluationPayload,
     db: Session = Depends(get_db),
-    current_user: user_model.user.User = Depends(get_current_user)
+    current_user: user.User = Depends(get_current_user)
 ):
     evaluation = services.gemini_service.evaluate_exercise_from_ai(
         results=payload.dict(),
@@ -51,6 +52,7 @@ def evaluate_exercise(
     current_user.weekly_score += evaluation["score"]
     for mistake in payload.wrong_answers:
         crud_user.create_user_mistake(db=db, user_id=current_user.id, mistake_in=mistake)
+    crud_user.delete_oldest_mistakes(db=db, user_id=current_user.id, keep_limit=50)
     db.commit()
     db.refresh(current_user)
     return evaluation

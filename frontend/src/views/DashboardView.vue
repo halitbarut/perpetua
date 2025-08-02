@@ -1,22 +1,39 @@
 <!-- frontend/src/views/DashboardView.vue -->
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/store/auth';
 import { useExerciseStore } from '@/store/exercise';
 import { useRouter } from 'vue-router';
+import { userService } from '@/services/user.service'; // user.service'i import et
 
 const authStore = useAuthStore();
 const exerciseStore = useExerciseStore();
 const router = useRouter();
 
+const aiFeedback = ref(null);
+const isLoadingFeedback = ref(true);
+
 const exercises = [
   { type: 'grammar', name: 'Gramer Kuralı', color: '#8854c7', description: 'Cümleleri doğru kelimelerle tamamla.' },
   { type: 'dialogue', name: 'Diyalog Tamamlama', color: '#4a90e2', description: 'Konuşmaları mantıklı bir şekilde ilerlet.' },
-  { type: 'word_matching', name: 'Kelime Eşleştirme', color: '#f5a623', description: 'Kelimeleri anlamlarıyla eşleştir.'},
+  { type: 'word_matching', name: 'Kelime Eşleştirme', color: '#f5a623', description: 'Kelimeleri anlamlarıyla eşleştir.' },
 ];
 
 const startExercise = (exerciseType) => {
   router.push(`/exercise/${exerciseType}`);
 };
+
+onMounted(async () => {
+  try {
+    const { data } = await userService.getAIFeedback();
+    aiFeedback.value = data;
+  } catch (error) {
+    console.error("AI tavsiyesi alınamadı:", error);
+    aiFeedback.value = "Şu anda senin için özel bir tavsiye hazırlayamadım, ama harika gittiğini biliyorum!";
+  } finally {
+    isLoadingFeedback.value = false;
+  }
+});
 </script>
 
 <template>
@@ -30,10 +47,21 @@ const startExercise = (exerciseType) => {
       </div>
     </header>
 
+    <div class="ai-feedback-card">
+      <div class="ai-feedback-header">
+        🤖 AI Koçundan Tavsiye
+      </div>
+      <div class="ai-feedback-body">
+        <p v-if="isLoadingFeedback">Senin için kişisel bir tavsiye hazırlanıyor...</p>
+        <p v-else>{{ aiFeedback }}</p>
+      </div>
+    </div>
+
     <div v-if="exerciseStore.error" class="error-message">
       {{ exerciseStore.error }}
     </div>
 
+    <h2 class="section-title">Alıştırmalar</h2>
     <div class="exercise-grid">
       <div
         v-for="exercise in exercises"
@@ -45,7 +73,6 @@ const startExercise = (exerciseType) => {
       >
         <h2>{{ exercise.name }}</h2>
         <p>{{ exercise.description }}</p>
-        <span v-if="exercise.disabled" class="soon-badge">Yakında</span>
       </div>
     </div>
   </div>
@@ -65,4 +92,33 @@ const startExercise = (exerciseType) => {
 .exercise-card.disabled:hover { transform: none; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
 .soon-badge { position: absolute; top: 10px; right: 10px; background-color: var(--text-secondary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; }
 .error-message { background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; }
+.ai-feedback-card {
+  background: linear-gradient(135deg, #eaf2fd 0%, #e6e9f0 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.ai-feedback-header {
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(255,255,255,0.5);
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 12px 12px 0 0;
+}
+.ai-feedback-body {
+  padding: 1.5rem;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #34495e;
+}
+.ai-feedback-body p {
+  margin: 0;
+  color: #34495e;
+}
+.section-title {
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
 </style>

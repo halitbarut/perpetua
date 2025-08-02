@@ -38,3 +38,36 @@ def create_user_mistake(db: Session, user_id: int, mistake_in: schema_exercise.W
     db.add(db_mistake)
     db.commit()
     return db_mistake
+
+def get_mistakes_by_user_id(db: Session, user_id: int, limit: int = 10):
+    """
+    Belirli bir kullanıcının son yaptığı hataları veritabanından çeker.
+    """
+    return db.query(model_mistake.UserMistake)\
+        .filter(model_mistake.UserMistake.owner_id == user_id)\
+        .order_by(desc(model_mistake.UserMistake.id))\
+        .limit(limit)\
+        .all()
+
+
+def delete_oldest_mistakes(db: Session, user_id: int, keep_limit: int = 50):
+    """
+    Bir kullanıcının en yeni 'keep_limit' kadar hatasını tutar ve daha eskilerini siler.
+    """
+    mistake_count = db.query(model_mistake.UserMistake).filter(model_mistake.UserMistake.owner_id == user_id).count()
+
+    if mistake_count > keep_limit:
+        num_to_delete = mistake_count - keep_limit
+
+        oldest_mistakes = db.query(model_mistake.UserMistake) \
+            .filter(model_mistake.UserMistake.owner_id == user_id) \
+            .order_by(model_mistake.UserMistake.id.asc()) \
+            .limit(num_to_delete) \
+            .all()
+
+        for mistake in oldest_mistakes:
+            db.delete(mistake)
+
+        db.commit()
+        return len(oldest_mistakes)
+    return 0

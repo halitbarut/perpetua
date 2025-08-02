@@ -1,7 +1,11 @@
+from typing import List
+
 import google.generativeai as genai
 from app.core.config import settings
 import json
 import random
+
+from app.db.models.user_mistake import UserMistake
 
 genai.configure(api_key=settings.GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-2.5-flash')
@@ -173,3 +177,40 @@ def evaluate_exercise_from_ai(results: dict, username: str):
     except Exception as e:
         print(f"AI Evaluation Error: {e}")
         return {"score": 0, "feedback": "Değerlendirme sırasında bir hata oluştu. Lütfen tekrar dene."}
+
+
+def generate_feedback_from_mistakes(mistakes: List[UserMistake], username: str):
+    """
+    Kullanıcının hatalarından yola çıkarak kişisel bir tavsiye metni üretir.
+    """
+    if not mistakes:
+        return f"Harika gidiyorsun {username}! Son alıştırmalarında hiç hatan yok. Bu harika seriyi devam ettir."
+
+    mistakes_summary = "\n".join(
+        [f"- Soru: '{m.question_text}', Yanlış Cevap: '{m.user_answer}', Doğru Cevap: '{m.correct_answer}'" for m in
+         mistakes]
+    )
+
+
+    prompt = f"""
+    Sen, Perpetua adlı bir dil öğrenme uygulamasında kişisel ve pozitif bir AI koçusun. Öğrencinin adı {username}.
+    Aşağıda, {username}'ın son zamanlarda yaptığı bazı hatalar listeleniyor:
+
+    {mistakes_summary}
+
+    GÖREVİN:
+    Bu hatalara genel olarak bakarak, {username}'a yönelik 1-2 cümlelik, kısa, samimi ve motive edici bir tavsiye yaz.
+    - Belirli bir gramer kuralında mı zorlanıyor? (örn: 'is/are' kullanımı)
+    - Yoksa kelime eşleştirmede mi zorlanıyor?
+    - Genel bir tavsiye ver. Örneğin: "Merhaba {username}, 'is' ve 'are' kullanımında biraz zorlandığını fark ettim. Unutma, tekil öznelerle 'is', çoğul öznelerle 'are' kullanırız. Pratik yapmaya devam, çok iyi gidiyorsun!"
+    - Asla yargılayıcı veya negatif olma. Her zaman cesaretlendirici ol.
+
+    Şimdi bu tavsiye metnini oluştur. Sadece metni döndür, başka hiçbir şey ekleme.
+    """
+
+    try:
+        response = model.generate_content(prompt)
+        return response.text.strip().strip('"')
+    except Exception as e:
+        print(f"AI Feedback Error: {e}")
+        return "Bugün senin için özel bir tavsiye hazırlayamadım, ama harika gittiğini biliyorum!"

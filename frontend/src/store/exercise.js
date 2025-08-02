@@ -74,23 +74,20 @@ export const useExerciseStore = defineStore('exercise', {
 
 
     prepareEvaluationPayload() {
-      let totalAttempts = 0; // Toplam deneme (hamle) sayısı
-      let totalCorrectMoves = 0; // Toplam doğru hamle sayısı
-      const finalWrongAnswers = []; // AI'a gönderilecek spesifik hatalar
+      let correctRounds = 0;
+      const finalWrongAnswers = [];
 
       this.questions.forEach((question, index) => {
         const userAnswerData = this.userAnswers[index];
+        let isRoundCorrect = false;
 
         switch (question.type) {
           case 'grammar':
           case 'dialogue':
-            { totalAttempts += 1; // Her tur tek bir denemedir
-            const correctAnswer = question.type === 'grammar' ? question.correct_word : question.correct_answer;
-            const isCorrect = userAnswerData === correctAnswer;
-            if (isCorrect) {
-              totalCorrectMoves++;
-            } else {
-              const questionText = question.type === 'grammar' ? question.sentence_template : question.question;
+            { const correctAnswer = question.type === 'grammar' ? question.correct_word : question.correct_answer;
+            const questionText = question.type === 'grammar' ? question.sentence_template : question.question;
+            isRoundCorrect = userAnswerData === correctAnswer;
+            if (!isRoundCorrect) {
               finalWrongAnswers.push({
                 question: questionText,
                 user_answer: userAnswerData,
@@ -100,31 +97,32 @@ export const useExerciseStore = defineStore('exercise', {
             break; }
 
           case 'word_matching':
-            { const correctMovesInRound = userAnswerData.totalMatches;
-            const wrongMovesInRound = userAnswerData.wrongAttempts;
-            const totalMovesInRound = correctMovesInRound + wrongMovesInRound;
-
-            totalCorrectMoves += correctMovesInRound;
-            totalAttempts += totalMovesInRound;
-
-            if (wrongMovesInRound > 0) {
+            { const correctMatchesInRound = userAnswerData.correct_pairs;
+            const totalMatchesInRound = userAnswerData.total_pairs;
+            isRoundCorrect = correctMatchesInRound === totalMatchesInRound;
+            if (!isRoundCorrect) {
               finalWrongAnswers.push({
-                question: `Kelime Eşleştirme Turu (${question.topic})`,
-                user_answer: `Bu turda ${wrongMovesInRound} yanlış deneme yaptın.`,
-                correct_answer: `Tüm kelimeleri ilk denemede doğru eşleştirmeye çalışmalısın.`
+                question: `Kelime Eşleştirme (${question.topic})`,
+                user_answer: `${correctMatchesInRound}/${totalMatchesInRound} doğru yaptın.`,
+                correct_answer: `Tüm kelimeleri doğru eşleştirmelisin.`
               });
             }
             break; }
         }
+
+        if (isRoundCorrect) {
+          correctRounds++;
+        }
       });
 
-      const finalScore = totalAttempts > 0 ? Math.round((totalCorrectMoves / totalAttempts) * 100) : 0;
+      const totalRounds = this.questions.length;
+      const finalScore = totalRounds > 0 ? Math.round((correctRounds / totalRounds) * 100) : 0;
 
       return {
-        total_questions: totalAttempts,
-        correct_answers: totalCorrectMoves,
-        final_score: finalScore,
+        total_questions: totalRounds,
+        correct_answers: correctRounds,
         wrong_answers: finalWrongAnswers,
+        final_score: finalScore, // <-- HESAPLANAN PUANI PAYLOAD'A EKLE
       };
     },
 

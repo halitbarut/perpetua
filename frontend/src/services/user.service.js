@@ -1,11 +1,15 @@
 import apiClient from './api';
 
 export const userService = {
-  /**
-   * Liderlik tablosu verisini çeker.
-   * @returns {Promise<Array>} - Puanlarına göre sıralanmış kullanıcı listesi.
-   */
   getLeaderboard() {
     return apiClient.get('/users/leaderboard');
+  },
+
+  /**
+   * Kullanıcının son hatalarına göre kişisel bir AI tavsiyesi alır.
+   * @returns {Promise<string>} - AI tarafından üretilen tavsiye metni.
+   */
+  getAIFeedback() {
+    return apiClient.get('/users/me/feedback'); // YENİ FONKSİYON
   },
 };

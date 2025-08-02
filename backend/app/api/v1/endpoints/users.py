@@ -7,6 +7,8 @@ from app.db.base import get_db
 from app.schemas import user as user_schema
 from app.db.models import user as user_model
 from app.core.security import get_current_user
+from app.services import gemini_service
+
 router = APIRouter()
 
 @router.get("/me", response_model=user_schema.User)
@@ -23,3 +25,21 @@ def read_leaderboard(
 ):
     leaderboard_users = crud_user.get_users_sorted_by_score(db, skip=skip, limit=limit)
     return leaderboard_users
+
+
+@router.get("/me/feedback", response_model=str)
+def get_user_feedback(
+        db: Session = Depends(get_db),
+        current_user: user_schema.User = Depends(get_current_user)
+):
+    """
+    Retrieves a personalized feedback message for the current user based on their recent mistakes.
+    """
+    recent_mistakes = crud_user.get_mistakes_by_user_id(db, user_id=current_user.id)
+
+    feedback_message = gemini_service.generate_feedback_from_mistakes(
+        mistakes=recent_mistakes,
+        username=current_user.username
+    )
+
+    return feedback_message
