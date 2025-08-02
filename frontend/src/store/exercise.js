@@ -20,8 +20,7 @@ export const useExerciseStore = defineStore('exercise', {
         return state.questions[state.currentQuestionIndex];
       }
       return null;
-    },
-    isSessionFinished: (state) => {
+    }, isSessionFinished: (state) => {
       return state.isSessionActive && state.currentQuestionIndex >= state.questions.length;
     },
   },
@@ -73,56 +72,59 @@ export const useExerciseStore = defineStore('exercise', {
       }
     },
 
+
     prepareEvaluationPayload() {
-      let correctCount = 0;
-      const wrongAnswers = [];
+      let totalAttempts = 0; // Toplam deneme (hamle) sayısı
+      let totalCorrectMoves = 0; // Toplam doğru hamle sayısı
+      const finalWrongAnswers = []; // AI'a gönderilecek spesifik hatalar
 
       this.questions.forEach((question, index) => {
-        const userAnswer = this.userAnswers[index]; // Bu artık bir obje
-        let isCorrect = false;
+        const userAnswerData = this.userAnswers[index];
 
         switch (question.type) {
           case 'grammar':
           case 'dialogue':
+            { totalAttempts += 1; // Her tur tek bir denemedir
             const correctAnswer = question.type === 'grammar' ? question.correct_word : question.correct_answer;
-            const questionText = question.type === 'grammar' ? question.sentence_template : question.question;
-            isCorrect = userAnswer === correctAnswer;
-            if (!isCorrect) {
-              wrongAnswers.push({ question: questionText, user_answer: userAnswer, correct_answer: correctAnswer });
+            const isCorrect = userAnswerData === correctAnswer;
+            if (isCorrect) {
+              totalCorrectMoves++;
+            } else {
+              const questionText = question.type === 'grammar' ? question.sentence_template : question.question;
+              finalWrongAnswers.push({
+                question: questionText,
+                user_answer: userAnswerData,
+                correct_answer: correctAnswer,
+              });
             }
-            break;
+            break; }
 
           case 'word_matching':
-            // userAnswer: { type: '...', topic: '...', user_pairs: [...] }
-            // user_pairs'daki her bir eşleşmenin doğruluğunu sayalım
-            const correctMatchesInRound = userAnswer.user_pairs.filter(p => p.isCorrect).length;
-            const totalMatchesInRound = question.words.length;
+            { const correctMovesInRound = userAnswerData.totalMatches;
+            const wrongMovesInRound = userAnswerData.wrongAttempts;
+            const totalMovesInRound = correctMovesInRound + wrongMovesInRound;
 
-            // Turu başarılı saymak için basit bir kural: yarıdan fazlası doğruysa
-            if (correctMatchesInRound > totalMatchesInRound / 2) {
-              isCorrect = true;
-            }
+            totalCorrectMoves += correctMovesInRound;
+            totalAttempts += totalMovesInRound;
 
-            // Yanlışları wrongAnswers'a ekleyelim
-            userAnswer.user_pairs.filter(p => !p.isCorrect).forEach(wrongPair => {
-              wrongAnswers.push({
-                question: `Eşleştirme (${question.topic}): ${wrongPair.word}`,
-                user_answer: wrongPair.meaning,
-                correct_answer: question.correct_pairs[wrongPair.word],
+            if (wrongMovesInRound > 0) {
+              finalWrongAnswers.push({
+                question: `Kelime Eşleştirme Turu (${question.topic})`,
+                user_answer: `Bu turda ${wrongMovesInRound} yanlış deneme yaptın.`,
+                correct_answer: `Tüm kelimeleri ilk denemede doğru eşleştirmeye çalışmalısın.`
               });
-            });
-            break;
-        }
-
-        if (isCorrect) {
-          correctCount++;
+            }
+            break; }
         }
       });
 
+      const finalScore = totalAttempts > 0 ? Math.round((totalCorrectMoves / totalAttempts) * 100) : 0;
+
       return {
-        total_questions: this.questions.length, // 5 tur
-        correct_answers: correctCount,
-        wrong_answers: wrongAnswers,
+        total_questions: totalAttempts,
+        correct_answers: totalCorrectMoves,
+        final_score: finalScore,
+        wrong_answers: finalWrongAnswers,
       };
     },
 

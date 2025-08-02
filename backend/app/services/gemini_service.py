@@ -1,6 +1,7 @@
 import google.generativeai as genai
 from app.core.config import settings
 import json
+import random
 
 genai.configure(api_key=settings.GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-2.5-flash')
@@ -78,7 +79,6 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
 
     if exercise_type == "word_matching":
         topics = ["Fruits", "Animals", "Family Members", "Colors", "Jobs", "Food", "Clothes"]
-        import random
         chosen_topics = random.sample(topics, 5)
 
         return f"""
@@ -115,6 +115,7 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
 
     return None
 
+
 def create_exercise_from_ai(exercise_type: str):
     user_level = "A1"
     prompt = _get_prompt_for_exercise(exercise_type, user_level)
@@ -141,28 +142,27 @@ def evaluate_exercise_from_ai(results: dict, username: str):
         mistakes_summary = "Hata yok."
 
     prompt = f"""
-    Sen, Perpetua adlı bir dil öğrenme uygulamasında kişisel bir AI öğretmensin. Öğrencinin adı {username}.
-    {username} az önce bir alıştırmayı tamamladı. İşte performansı:
+        Sen, Perpetua adlı bir dil öğrenme uygulamasında kişisel bir AI öğretmensin. Öğrencinin adı {username}.
+        {username} az önce bir alıştırmayı tamamladı. İşte performansı:
 
-    Performans Özeti: {user_performance}
-    Detaylar: {mistakes_summary}
+        - Nihai Puanı: {results['final_score']}
+        - Toplam Hamle Sayısı: {results['total_questions']}
+        - Doğru Hamle Sayısı: {results['correct_answers']}
+        - Yaptığı spesifik hatalar: {results['wrong_answers'] if results['wrong_answers'] else 'Yok.'}
 
-    GÖREVLERİN:
-    1. PUAN HESAPLA: Puanı (correct_answers / total_questions) * 100 formülüyle hesapla ve tam sayıya yuvarla.
-    2. YORUM YAZ: {username}'a ismiyle hitap ederek, pozitif ve cesaretlendirici bir dille yorum yaz.
-       - Eğer HİÇ HATA YOKSA: Onu içtenlikle tebrik et. "Harika iş, {username}! Bu turda hiç hatan olmadı, tebrikler!" gibi.
-       - Eğer HATA VARSA:
-         a) Sadece BİR hatasına odaklan.
-         b) Hatasının nedenini basit bir gramer kuralıyla açıkla. Örneğin, sadece "'have' yerine 'has' kullan" deme. NEDENİNİ söyle: "'He', 'She' gibi özneler üçüncü tekil şahıs olduğu için fiilin sonuna '-s' takısı gelir, bu yüzden 'have' yerine 'has' kullanırız." gibi.
-         c) Onu cesaretlendirerek bitir. "Ama bu harika bir denemeydi, öğrenme sürecinin bir parçası bu. Çalışmaya devam et!" gibi.
-       - Klişe ifadelerden kaçın. Samimi ve kişisel bir ton kullan.
+        GÖREVİN:
+        Bu performansa göre, {username}'a ismiyle hitap ederek, pozitif ve cesaretlendirici bir dille, 1-2 cümlelik kişisel bir yorum yaz.
+        - Eğer puanı yüksekse (örn: 80 üzeri), hızını ve doğruluğunu öv.
+        - Eğer puanı ortalamaysa, iyi çabasını takdir et ve hangi konularda zorlandığını nazikçe belirt.
+        - Eğer puanı düşükse, bunun öğrenmenin bir parçası olduğunu vurgula ve moralini yüksek tutması için cesaretlendir.
+        - Yaptığı spesifik bir hataya (eğer varsa) odaklanarak, neden yanlış olduğunu kısaca açıkla.
 
-    Çıktı olarak SADECE ve SADECE aşağıdaki formatta bir JSON objesi döndür:
-    {{
-      "score": <hesaplanan_puan>,
-      "feedback": "<{username}'a özel olarak yazdığın yorum>"
-    }}
-    """
+        Çıktı olarak SADECE ve SADECE aşağıdaki formatta bir JSON objesi döndür. Puanı TEKRAR HESAPLAMA, sana verilen puanı kullan:
+        {{
+          "score": {results['final_score']},
+          "feedback": "<{username}'a özel olarak yazdığın yorum>"
+        }}
+        """
 
     try:
         # Temperature ayarını eklemek, daha tutarlı çıktılar için iyidir.
