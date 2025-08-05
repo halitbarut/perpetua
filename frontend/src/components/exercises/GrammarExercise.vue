@@ -108,7 +108,7 @@ watch(() => exerciseStore.currentQuestionIndex, () => {
 .word-button { padding: 1rem 2rem; font-size: 1.2rem; border: 2px solid var(--border-color); border-radius: 12px; background: var(--surface-color); cursor: pointer; transition: all 0.2s; }
 .word-button:hover:not(:disabled) { background-color: #f1f3f5; border-color: #ccc; }
 .word-button:disabled { opacity: 0.5; cursor: not-allowed; }
-.exercise-footer { width: 100%; padding: 1.5rem 0; border-top: 2px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; transition: background-color 0.3s; }
+.exercise-footer { width: 100%; padding: 1.5rem 2rem; border-top: 2px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; transition: background-color 0.3s; box-sizing: border-box; }
 .exercise-footer.correct { background-color: #d4edda; }
 .exercise-footer.incorrect { background-color: #f8d7da; }
 .feedback-box h3 { margin: 0; font-size: 1.2rem; }

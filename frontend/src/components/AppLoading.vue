@@ -1,11 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-
 defineProps({
-  title: {
-    type: String,
-    default: 'Yükleniyor...'
-  }
+  title: { type: String, default: 'Yükleniyor...' }
 });
 
 const tips = [
@@ -13,16 +9,18 @@ const tips = [
   "Yanlış yapmaktan korkma! Her hata, öğrenme sürecinin bir parçasıdır.",
   "Yeni bir dil öğrenmek, beyninde yeni sinirsel yollar oluşturur.",
   "Her gün sadece 15 dakika pratik yapmak, hiç yapmamaktan çok daha etkilidir.",
-  "Dinleme pratiği için sevdiğin yabancı şarkıları sözleriyle takip etmeyi dene."
+  "Dinleme pratiği için sevdiğin yabancı şarkıları sözleriyle takip etmeyi dene.",
+  "Öğrendiğin yeni bir kelimeyi gün içinde 3 farklı cümlede kullanmaya çalış.",
+  "Dil öğrenirken yapılan en büyük hata, konuşmaktan çekinmektir.",
+  "Bir dili öğrenmenin en hızlı yolu, o dili hayatının bir parçası yapmaktır.",
+  "Hedeflerini küçük ve ulaşılabilir parçalara böl: 'Bugün 5 yeni kelime öğreneceğim.' gibi.",
+  "Biraz ilerledikten sonra telefonunun dilini öğrenmekte olduğun dile çevir."
 ];
-
 const randomTip = ref('');
-
 onMounted(() => {
   randomTip.value = tips[Math.floor(Math.random() * tips.length)];
 });
 </script>
-
 <template>
   <div class="loading-overlay">
     <div class="loading-content">
@@ -32,7 +30,6 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
 <style scoped>
 .loading-overlay {
   position: fixed;

@@ -4,12 +4,15 @@ export const userService = {
   getLeaderboard() {
     return apiClient.get('/users/leaderboard');
   },
-
-  /**
-   * Kullanıcının son hatalarına göre kişisel bir AI tavsiyesi alır.
-   * @returns {Promise<string>} - AI tarafından üretilen tavsiye metni.
-   */
   getAIFeedback() {
-    return apiClient.get('/users/me/feedback'); // YENİ FONKSİYON
+    return apiClient.get('/users/me/feedback');
+  },
+  /**
+   * Kullanıcının mevcut dil seviyesini günceller.
+   * @param {string} level - Yeni seviye (örn: "B1")
+   * @returns {Promise<object>} - Güncellenmiş kullanıcı verisi.
+   */
+  updateUserLevel(level) {
+    return apiClient.put('/users/me/level', { level });
   },
 };

@@ -15,17 +15,17 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
     """Alıştırma tipine göre doğru AI prompt'unu döndürür."""
     if exercise_type == "grammar":
         return f"""
-        Sen, A1 seviyesinde İngilizce öğreten bir yapay zekasın.
-        Görevin, A1 seviyesi için "cümle tamamlama" formatında 5 adet gramer sorusu oluşturmak.
-        Her soru, içinde '___' bulunan bir cümle ve bu boşluğa gelebilecek kelimelerden oluşan bir kelime bankası içermelidir.
+            Sen, {level} seviyesinde İngilizce öğreten bir yapay zekasın.
+            Görevin, {level} seviyesi için "cümle tamamlama" formatında 5 adet gramer sorusu oluşturmak.
+            Her soru, içinde '___' bulunan bir cümle ve bu boşluğa gelebilecek kelimelerden oluşan bir kelime bankası içermelidir.
 
-        KURALLAR:
-        1. Toplam 5 adet soru nesnesi oluştur.
-        2. Her soru için 4 kelimelik bir kelime bankası oluştur (1 doğru, 3 yanlış).
-        3. Çıktı olarak SADECE ve SADECE bir JSON objesi döndür. Bu obje, "questions" adında bir anahtar ve bu 5 soru nesnesini içeren bir liste barındırmalıdır.
-        4. Her soru nesnesi şu alanları içermelidir: "sentence_template", "word_bank", "correct_word".
+            KURALLAR:
+            1. Toplam 5 adet soru nesnesi oluştur.
+            2. Her soru için 4 kelimelik bir kelime bankası oluştur (1 doğru, 3 yanlış).
+            3. ÇOK ÖNEMLİ: Her bir soru nesnesinin içine, `"type": "grammar"` alanını MUTLAKA ekle. Bu alan zorunludur.
+            4. Çıktı olarak SADECE ve SADECE bir JSON objesi döndür. Bu obje, "questions" adında bir anahtar ve bu 5 soru nesnesini içeren bir liste barındırmalıdır.
 
-        ÖRNEK ÇIKTI FORMATI:
+            ÖRNEK ÇIKTI FORMATI:
         {{
           "questions": [
             {{
@@ -120,8 +120,7 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
     return None
 
 
-def create_exercise_from_ai(exercise_type: str):
-    user_level = "A1"
+def create_exercise_from_ai(exercise_type: str, user_level: str):
     prompt = _get_prompt_for_exercise(exercise_type, user_level)
 
     if not prompt:

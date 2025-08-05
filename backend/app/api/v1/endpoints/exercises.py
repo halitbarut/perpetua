@@ -22,7 +22,8 @@ def get_new_exercise(
     current_user: user_model.user.User = Depends(get_current_user)
 ):
     ai_response = gemini_service.create_exercise_from_ai(
-        exercise_type=exercise_type
+        exercise_type=exercise_type,
+        user_level=current_user.current_level
     )
     if not ai_response or "questions" not in ai_response:
         raise HTTPException(

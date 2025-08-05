@@ -43,3 +43,16 @@ def get_user_feedback(
     )
 
     return feedback_message
+
+@router.put("/me/level", response_model=user_schema.User)
+def update_current_user_level(
+    *,
+    db: Session = Depends(get_db),
+    level_in: user_schema.UserLevelUpdate,
+    current_user: user_model.User = Depends(get_current_user)
+):
+    """
+    Update the level of the current user.
+    """
+    updated_user = crud_user.update_user_level(db=db, user=current_user, new_level=level_in.level)
+    return updated_user

@@ -71,3 +71,13 @@ def delete_oldest_mistakes(db: Session, user_id: int, keep_limit: int = 50):
         db.commit()
         return len(oldest_mistakes)
     return 0
+
+def update_user_level(db: Session, user: model_user.User, new_level: str) -> model_user.User:
+    """
+    Kullanıcının seviyesini günceller.
+    """
+    user.current_level = new_level
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
