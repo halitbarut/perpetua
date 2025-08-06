@@ -47,8 +47,8 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
 
     if exercise_type == "dialogue":
         return f"""
-        Sen, A1 seviyesinde İngilizce öğreten bir yapay zekasın.
-        Görevin, A1 seviyesi için "diyalog tamamlama" formatında 5 ADET FARKLI soru oluşturmak.
+        Sen, {level} seviyesinde İngilizce öğreten bir yapay zekasın.
+        Görevin, {level} seviyesi için "diyalog tamamlama" formatında 5 ADET FARKLI soru oluşturmak.
 
         KURALLAR:
         1. Birbirinden bağımsız, 5 adet diyalog sorusu oluştur.
@@ -86,8 +86,8 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
         chosen_topics = random.sample(topics, 5)
 
         return f"""
-        Sen, A1 seviyesinde İngilizce öğreten bir yapay zekasın.
-        Görevin, A1 seviyesi için "kelime eşleştirme" formatında 5 ADET FARKLI set oluşturmak.
+        Sen, {level} seviyesinde İngilizce öğreten bir yapay zekasın.
+        Görevin, {level} seviyesi için "kelime eşleştirme" formatında 5 ADET FARKLI set oluşturmak.
 
         KURALLAR:
         1. Sırasıyla şu konular için setler oluştur: {', '.join(chosen_topics)}.
@@ -114,7 +114,7 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
           ]
         }}
 
-        Şimdi belirtilen konular için, "correct_pairs" cevap anahtarını da içeren 5 kelime eşleştirme seti oluştur.
+        Şimdi belirtilen konular için, {level} seviyesinde "correct_pairs" cevap anahtarını da içeren 5 kelime eşleştirme seti oluştur.
         """
 
     return None
