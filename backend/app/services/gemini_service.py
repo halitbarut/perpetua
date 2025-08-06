@@ -82,19 +82,15 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
         """
 
     if exercise_type == "word_matching":
-        topics = ["Fruits", "Animals", "Family Members", "Colors", "Jobs", "Food", "Clothes"]
-        chosen_topics = random.sample(topics, 5)
-
         return f"""
         Sen, {level} seviyesinde İngilizce öğreten bir yapay zekasın.
         Görevin, {level} seviyesi için "kelime eşleştirme" formatında 5 ADET FARKLI set oluşturmak.
 
         KURALLAR:
-        1. Sırasıyla şu konular için setler oluştur: {', '.join(chosen_topics)}.
-        2. Her konu için 4 adet basit İngilizce kelime ve Türkçe karşılıklarını bul.
-        3. ÇOK ÖNEMLİ: Çıktı olarak, "words" ve "meanings" listelerini BİRBİRİNDEN FARKLI, yani tamamen karışık sıralarda ver.
-        4. Ek olarak, "correct_pairs" adında bir SÖZLÜK (dictionary/object) oluştur. Bu sözlükte anahtar (key) İngilizce kelime, değer (value) ise onun doğru Türkçe karşılığı olmalıdır.
-        5. Çıktı olarak SADECE ve SADECE bir JSON objesi döndür.
+        1. Her konu için 4 adet basit İngilizce kelime ve Türkçe karşılıklarını bul.
+        2. ÇOK ÖNEMLİ: Çıktı olarak, "words" ve "meanings" listelerini BİRBİRİNDEN FARKLI, yani tamamen karışık sıralarda ver.
+        3. Ek olarak, "correct_pairs" adında bir SÖZLÜK (dictionary/object) oluştur. Bu sözlükte anahtar (key) İngilizce kelime, değer (value) ise onun doğru Türkçe karşılığı olmalıdır.
+        4. Çıktı olarak SADECE ve SADECE bir JSON objesi döndür.
 
         ÖRNEK ÇIKTI FORMATI:
         {{
@@ -114,7 +110,7 @@ def _get_prompt_for_exercise(exercise_type: str, level: str):
           ]
         }}
 
-        Şimdi belirtilen konular için, {level} seviyesinde "correct_pairs" cevap anahtarını da içeren 5 kelime eşleştirme seti oluştur.
+        Şimdi, {level} seviyesinde "correct_pairs" cevap anahtarını da içeren 5 kelime eşleştirme seti oluştur.
         """
 
     return None
