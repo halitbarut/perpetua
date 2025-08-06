@@ -30,7 +30,7 @@ const handleRegister = async () => {
 <template>
   <div class="auth-page">
     <div class="auth-form">
-      <img src="@/assets/logo.svg" alt="Perpetua Logo" class="logo" />
+      <img src="@/assets/logo.png" alt="Perpetua Logo" class="logo" />
       <h1>Hesap Oluştur</h1>
       <p class="subtitle">Macerana katılmak için sadece bir adım kaldı.</p>
 
