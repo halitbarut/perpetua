@@ -21,9 +21,8 @@ const handleRegister = async () => {
       email: email.value,
       password: password.value,
     });
-    // Yönlendirme store içinde yapılıyor
   } catch (err) {
-    error.value = err.detail || 'Kayıt başarısız oldu.';
+    error.value = err.detail || 'Kayıt başarısız oldu. Lütfen bilgileri kontrol edin veya farklı bir kullanıcı adı/e-posta deneyin.';
   }
 };
 </script>
@@ -31,7 +30,10 @@ const handleRegister = async () => {
 <template>
   <div class="auth-page">
     <div class="auth-form">
-      <h1>Kayıt Ol</h1>
+      <img src="@/assets/logo.svg" alt="Perpetua Logo" class="logo" />
+      <h1>Hesap Oluştur</h1>
+      <p class="subtitle">Macerana katılmak için sadece bir adım kaldı.</p>
+
       <form @submit.prevent="handleRegister">
         <div class="form-group">
           <label for="username">Kullanıcı Adı</label>
@@ -45,9 +47,12 @@ const handleRegister = async () => {
           <label for="password">Şifre</label>
           <input type="password" id="password" v-model="password" required />
         </div>
+
         <div v-if="error" class="error-message">{{ error }}</div>
+
         <button type="submit" class="btn btn-primary">Kayıt Ol</button>
       </form>
+
       <p>
         Zaten bir hesabın var mı?
         <router-link to="/login">Giriş Yap</router-link>
@@ -56,57 +61,12 @@ const handleRegister = async () => {
   </div>
 </template>
 
-<!-- LoginView.vue ve RegisterView.vue için yeni <style> -->
 <style scoped>
-.auth-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-.auth-form {
-  background: var(--surface-color);
-  padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-}
-.form-group {
-  margin-bottom: 1.5rem;
-  text-align: left;
-}
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 1rem;
-}
-input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
-}
-.error-message {
-  color: var(--danger-color);
-  margin-bottom: 1rem;
-}
-p {
-  margin-top: 1.5rem;
-}
+.auth-page { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+.auth-form { background: var(--surface-color); padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05); width: 100%; max-width: 400px; text-align: center; }
 .logo { height: 60px; margin-bottom: 1rem; }
 h1 { margin-bottom: 0.5rem; }
 .subtitle { margin-top: 0; margin-bottom: 2rem; color: var(--text-secondary); }
-
-.auth-page { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-.auth-form { background: var(--surface-color); padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05); width: 100%; max-width: 400px; text-align: center; }
 .form-group { margin-bottom: 1.5rem; text-align: left; }
 label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
 input { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
