@@ -27,14 +27,20 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/',
-      redirect: '/login',
-    },
-    {
       path: '/leaderboard',
       name: 'leaderboard',
       component: () => import('../views/LeaderboardView.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/',
+      redirect: (to) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          return '/dashboard';
+        }
+        return '/login';
+      },
     },
   ],
 });

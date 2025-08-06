@@ -74,55 +74,54 @@ export const useExerciseStore = defineStore('exercise', {
 
 
     prepareEvaluationPayload() {
-      let correctRounds = 0;
+      let totalCorrectItems = 0;
+      let totalPossibleItems = 0;
       const finalWrongAnswers = [];
 
       this.questions.forEach((question, index) => {
         const userAnswerData = this.userAnswers[index];
-        let isRoundCorrect = false;
 
-        switch (question.type) {
-          case 'grammar':
-          case 'dialogue':
-            { const correctAnswer = question.type === 'grammar' ? question.correct_word : question.correct_answer;
+        if (question.type === 'grammar' || question.type === 'dialogue') {
+          totalPossibleItems += 1;
+          const correctAnswer = question.type === 'grammar' ? question.correct_word : question.correct_answer;
+          if (userAnswerData === correctAnswer) {
+            totalCorrectItems += 1;
+          } else {
             const questionText = question.type === 'grammar' ? question.sentence_template : question.question;
-            isRoundCorrect = userAnswerData === correctAnswer;
-            if (!isRoundCorrect) {
-              finalWrongAnswers.push({
-                question: questionText,
-                user_answer: userAnswerData,
-                correct_answer: correctAnswer,
-              });
-            }
-            break; }
+            finalWrongAnswers.push({
+              question: questionText,
+              user_answer: userAnswerData,
+              correct_answer: correctAnswer,
+            });
+          }
+        } else if (question.type === 'word_matching') {
+          const totalPairs = userAnswerData.totalPairs;
+          const wrongAttempts = userAnswerData.wrongAttempts;
 
-          case 'word_matching':
-            { const correctMatchesInRound = userAnswerData.correct_pairs;
-            const totalMatchesInRound = userAnswerData.total_pairs;
-            isRoundCorrect = correctMatchesInRound === totalMatchesInRound;
-            if (!isRoundCorrect) {
-              finalWrongAnswers.push({
-                question: `Kelime Eşleştirme (${question.topic})`,
-                user_answer: `${correctMatchesInRound}/${totalMatchesInRound} doğru yaptın.`,
-                correct_answer: `Tüm kelimeleri doğru eşleştirmelisin.`
-              });
-            }
-            break; }
-        }
+          // Bu turdaki toplam olası doğru sayısı
+          totalPossibleItems += totalPairs;
 
-        if (isRoundCorrect) {
-          correctRounds++;
+          // Net doğru sayısı = Toplam - Yanlış denemeler (0'dan az olamaz)
+          const netCorrect = Math.max(0, totalPairs - wrongAttempts);
+          totalCorrectItems += netCorrect;
+
+          if (wrongAttempts > 0) {
+            finalWrongAnswers.push({
+              question: `Kelime Eşleştirme (${question.topic})`,
+              user_answer: `${netCorrect}/${totalPairs} doğru`,
+              correct_answer: `Bu turda ${wrongAttempts} yanlış deneme yaptın.`
+            });
+          }
         }
       });
 
-      const totalRounds = this.questions.length;
-      const finalScore = totalRounds > 0 ? Math.round((correctRounds / totalRounds) * 100) : 0;
+      const finalScore = totalPossibleItems > 0 ? Math.round((totalCorrectItems / totalPossibleItems) * 100) : 0;
 
       return {
-        total_questions: totalRounds,
-        correct_answers: correctRounds,
+        total_questions: totalPossibleItems,
+        correct_answers: totalCorrectItems,
         wrong_answers: finalWrongAnswers,
-        final_score: finalScore, // <-- HESAPLANAN PUANI PAYLOAD'A EKLE
+        final_score: finalScore,
       };
     },
 

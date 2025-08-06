@@ -71,3 +71,12 @@ p {
 .btn-secondary:hover {
   background-color: #f1f3f5;
 }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}

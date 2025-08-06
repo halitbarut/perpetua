@@ -1,7 +1,14 @@
-<!-- frontend/src/components/exercises/DialogueExercise.vue (DOĞRULANMIŞ) -->
 <script setup>
 import { ref, watch } from 'vue';
 import { useExerciseStore } from '@/store/exercise';
+import correctSoundFile from '@/assets/sounds/correct-answer.mp3';
+import wrongSoundFile from '@/assets/sounds/wrong-answer.mp3';
+
+const correctAudio = new Audio(correctSoundFile);
+const wrongAudio = new Audio(wrongSoundFile);
+
+correctAudio.volume = 0.7;
+wrongAudio.volume = 0.7;
 
 const exerciseStore = useExerciseStore();
 const selectedOption = ref(null);
@@ -11,8 +18,10 @@ const checkAnswer = () => {
   if (!selectedOption.value) return;
   if (selectedOption.value === exerciseStore.currentQuestion.correct_answer) {
     checkStatus.value = 'correct';
+    correctAudio.play();
   } else {
     checkStatus.value = 'incorrect';
+    wrongAudio.play();
   }
 };
 
@@ -29,7 +38,6 @@ watch(() => exerciseStore.currentQuestionIndex, () => {
 </script>
 
 <template>
-  <!-- ANA VE TEK TEMPLATE ETİKETİ BAŞLANGICI -->
   <div class="exercise-wrapper">
     <div class="exercise-content">
       <div class="dialogue-box">
@@ -82,11 +90,9 @@ watch(() => exerciseStore.currentQuestionIndex, () => {
       </button>
     </footer>
   </div>
-  <!-- ANA VE TEK TEMPLATE ETİKETİ BİTİŞİ -->
 </template>
 
 <style scoped>
-/* Stilleri tek bir div içinde sarmalayarak daha iyi yönetelim */
 .exercise-wrapper {
   display: flex;
   flex-direction: column;

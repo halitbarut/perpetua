@@ -12,3 +12,4 @@ pydantic[email]
 bcrypt
 python-multipart
 alembic
+gunicorn

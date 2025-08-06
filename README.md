@@ -10,8 +10,6 @@
 
 Uygulama, her kullanıcı için benzersiz alıştırmalar oluşturur. Bir kullanıcı yeni bir alıştırma başlattığında, yapay zeka kullanıcının mevcut seviyesini (A1'den B2'ye), geçmişte yaptığı hataları ve genel performansını analiz ederek o anki ihtiyacına en uygun soruları üretir. Her alıştırma sonunda, kullanıcının performansına göre yine yapay zeka tarafından kişiselleştirilmiş bir puan ve geri bildirim sunulur. Bu puanlar, kullanıcıların "Tüm Zamanlar" liderlik tablosunda birbirleriyle tatlı bir rekabete girmesini sağlar.
 
----
-
 ### 🇬🇧 English
 
 **Perpetua** is a generative AI (Google Gemini) powered language learning platform that dynamically adapts to the personal learning needs of its users. It was developed for the Hackathon 2025, organized in collaboration with BTK Academy, Google, and the Entrepreneurship Foundation.
@@ -20,51 +18,49 @@ The application generates unique exercises for each user. When a user starts a n
 
 ---
 
+## ✨ Ana Özellikler / Key Features
+
+*   **Dinamik Alıştırma Üretimi:** Tüm alıştırmalar (`Gramer`, `Diyalog`, `Kelime Eşleştirme`) anlık olarak Google Gemini tarafından, kullanıcının seviyesine ve ihtiyaçlarına özel olarak oluşturulur.
+*   **Kişiselleştirilmiş Geri Bildirim:** Her alıştırma sonunda, AI kullanıcının performansını analiz eder ve ona özel, motive edici bir yorum yazar.
+*   **AI Koçu:** Ana ekranda, kullanıcının geçmiş hatalarından yola çıkarak odaklanması gereken konular hakkında kişisel tavsiyeler sunar.
+*   **Seviye Sistemi:** Kullanıcılar A1'den B2'ye kadar kendi seviyelerini seçebilir ve alıştırmaların zorluğunu buna göre ayarlayabilir.
+*   **Liderlik Tablosu:** Kullanıcılar, kazandıkları puanlarla "Tüm Zamanlar" sıralamasında birbirleriyle yarışabilir.
+*   **Oyunlaştırılmış Deneyim:** Akıcı arayüz geçişleri ve anlık işitsel geri bildirimler (doğru/yanlış sesleri) ile öğrenmeyi daha eğlenceli hale getirir.
+
+---
+
+## 🖼️ Ekran Görüntüleri / Screenshots
+
+| Dashboard | Alıştırma (Gramer) | Sonuç Ekranı |
+| :---: | :---: | :---: |
+| ![Dashboard Ekranı](EKRAN_GÖRÜNTÜSÜ_LİNKİ_1) | ![Gramer Alıştırması](EKRAN_GÖRÜNTÜSÜ_LİNKİ_2) | ![Sonuç Ekranı](EKRAN_GÖRÜNTÜSÜ_LİNKİ_3) |
+
+---
+
 ## 🚀 Projeyi Çalıştırma (Docker ile) / Running the Project (with Docker)
 
 Bu proje, `docker-compose` kullanılarak kolayca çalıştırılmak üzere tasarlanmıştır. Bilgisayarınızda Docker ve Docker Compose'un kurulu olduğundan emin olun.
 
-This project is designed to be easily run using `docker-compose`. Ensure you have Docker and Docker Compose installed on your machine.
-
 **1. Projeyi Klonlayın / Clone the Project:**
 ```bash
-git clone https://github.com/halitbarut/perpetua.git
+git clone https://github.com/mhbarut/perpetua.git
 cd perpetua
 ```
 
 **2. Ortam Değişkenlerini Ayarlayın / Set Up Environment Variables:**
 `.env.example` dosyasını `.env` olarak kopyalayın ve içini kendi değerlerinizle doldurun.
-
-Copy `.env.example` to `.env` and fill it with your own values.
 ```bash
 cp .env.example .env
-nano .env # Edit the file with your keys
-```
-Dosyanın içeriği şöyle olmalı:
-```env
-# .env
-SECRET_KEY="openssl rand -hex 32 komutuyla_guvenli_bir_anahtar_uret"
-GEMINI_API_KEY="kendi_google_ai_studio_api_anahtariniz"
+nano .env # Dosyayı açıp kendi anahtarlarınızı girin
 ```
 
-**3. (Opsiyonel) Veritabanı Şifresini Değiştirme / (Optional) Change Database Password:**
-Geliştirme için varsayılan şifre (`strong_password`) yeterlidir. Ancak değiştirmek isterseniz, `docker-compose.yml` dosyasını açın ve **iki yerde birden** aynı yeni şifreyi girin:
-1.  `services.db.environment.POSTGRES_PASSWORD`
-2.  `services.backend.environment.DATABASE_URL` içindeki şifre bölümü.
-
-The default password (`strong_password`) is sufficient for development. However, if you wish to change it, open `docker-compose.yml` and enter the new password in **both** locations:
-1.  `services.db.environment.POSTGRES_PASSWORD`
-2.  The password section within `services.backend.environment.DATABASE_URL`.
-
-**4. Uygulamayı Başlatın / Start the Application:**
-Aşağıdaki komut, tüm servisleri (PostgreSQL, Backend, Frontend) build edip arkaplanda başlatacaktır. İlk çalıştırma, imajların indirilmesi nedeniyle birkaç dakika sürebilir.
-
-The following command will build and start all services. The first run might take a few minutes.
+**3. Uygulamayı Başlatın / Start the Application:**
 ```bash
 docker compose up --build -d
 ```
+İlk çalıştırma, imajların indirilmesi nedeniyle birkaç dakika sürebilir.
 
-**5. Uygulamaya Erişin / Access the Application:**
+**4. Uygulamaya Erişin / Access the Application:**
 *   **Frontend:** [http://localhost:5173](http://localhost:5173)
 *   **Backend API (Swagger Docs):** [http://localhost:8000/docs](http://localhost:8000/docs)
 *   **Veritabanı Yönetim Arayüzü (PgAdmin):** [http://localhost:5050](http://localhost:5050)
@@ -73,24 +69,17 @@ docker compose up --build -d
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler / Tech Stack
+## 🛠️ Kullanılan Teknolojiler & Araçlar / Tech Stack & Tools
 
-### Backend
-*   **Framework:** FastAPI
-*   **Veritabanı:** PostgreSQL
-*   **ORM:** SQLAlchemy
-*   **Veritabanı Geçişleri (Migrations):** Alembic
-*   **Veri Doğrulama:** Pydantic
-*   **AI Entegrasyonu:** Google Gemini API
-*   **Konteynerleştirme:** Docker
+### Proje Geliştirme
+*   **Backend:** FastAPI, PostgreSQL, SQLAlchemy, Alembic, Pydantic
+*   **Frontend:** Vue.js 3 (Composition API), Vite, Vue Router, Pinia, Axios
+*   **Konteynerleştirme:** Docker, Docker Compose, Nginx
 
-### Frontend
-*   **Framework:** Vue.js 3 (Composition API & `<script setup>`)
-*   **Build Aracı:** Vite
-*   **Yönlendirme (Routing):** Vue Router
-*   **State Yönetimi:** Pinia
-*   **API İstemcisi:** Axios
-*   **Konteynerleştirme:** Docker & Nginx (Reverse Proxy)
+### Üretken Yapay Zeka (Generative AI)
+*   **Ana Dil Modeli:** Google Gemini (`gemini-2.5-flash`)
+*   **Logo Tasarımı:** Ideogram AI
+*   **Ses Efektleri:** ElevenLabs
 
 ---
 

@@ -1,57 +1,37 @@
-# .gitignore (NİHAİ VE EN DOĞRU HALİ)
-
-# ####################### #
-#   GENEL Yoksaymalar     #
-# ####################### #
-# IDE/Editör Konfigürasyonları
 .idea/
 .vscode/
 
-# İşletim Sistemi Dosyaları
 .DS_Store
 Thumbs.db
 
 
-# ####################### #
-#   BACKEND (Python)      #
-# ####################### #
-# Sanal Ortam
 /backend/.venv/
 /backend/venv/
 
-# Python Cache
 **/__pycache__/
 *.py[cod]
 
-# Veritabanı Dosyaları
 /backend/*.db
 /backend/*.sqlite
 /backend/*.sqlite3
 
-# Ortam Değişkenleri
 /backend/.env
 
 
-# ####################### #
-#   FRONTEND (Vue)        #
-# ####################### #
-# Bağımlılıklar
 /frontend/node_modules/
 
-# Üretim (Build) Çıktısı
 /frontend/dist/
 /frontend/dist-ssr/
 
-# Log Dosyaları
 /frontend/npm-debug.log*
 /frontend/yarn-debug.log*
 /frontend/yarn-error.log*
 /frontend/pnpm-debug.log*
 
-# Ortam Değişkenleri Dosyaları
 /frontend/.env
 /frontend/.env.local
 /frontend/.env.*.local
 
-# Vite Cache
 /frontend/.vite/
+
+.env

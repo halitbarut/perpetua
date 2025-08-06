@@ -1,8 +1,14 @@
-<!-- frontend/src/components/exercises/GrammarExercise.vue (DOĞRULANMIŞ) -->
 <script setup>
-// Script kısmı zaten doğruydu, aynı kalıyor
 import { ref, computed, watch } from 'vue';
 import { useExerciseStore } from '@/store/exercise';
+import correctSoundFile from '@/assets/sounds/correct-answer.mp3';
+import wrongSoundFile from '@/assets/sounds/wrong-answer.mp3';
+
+const correctAudio = new Audio(correctSoundFile);
+const wrongAudio = new Audio(wrongSoundFile);
+
+correctAudio.volume = 0.7;
+wrongAudio.volume = 0.7;
 
 const exerciseStore = useExerciseStore();
 const selectedWord = ref(null);
@@ -17,8 +23,10 @@ const checkAnswer = () => {
   if (!selectedWord.value) return;
   if (selectedWord.value === exerciseStore.currentQuestion.correct_word) {
     checkStatus.value = 'correct';
+    correctAudio.play();
   } else {
     checkStatus.value = 'incorrect';
+    wrongAudio.play();
   }
 };
 
@@ -35,7 +43,6 @@ watch(() => exerciseStore.currentQuestionIndex, () => {
 </script>
 
 <template>
-  <!-- ANA VE TEK TEMPLATE ETİKETİ BAŞLANGICI -->
   <div class="exercise-wrapper">
     <div class="exercise-content">
       <div class="question-panel">
@@ -84,7 +91,6 @@ watch(() => exerciseStore.currentQuestionIndex, () => {
       </button>
     </footer>
   </div>
-  <!-- ANA VE TEK TEMPLATE ETİKETİ BİTİŞİ -->
 </template>
 
 <style scoped>

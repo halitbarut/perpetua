@@ -58,6 +58,9 @@ onMounted(async () => {
 
   <div v-else-if="exerciseStore.isSessionFinished" class="results-container">
     <div class="results-card">
+      <transition name="fade" mode="out-in">
+        <component :is="currentExerciseComponent" :key="exerciseStore.currentQuestionIndex" />
+      </transition>
       <h1>Alıştırma Tamamlandı!</h1>
       <h2>Puanın: <span class="final-score">{{ exerciseStore.finalScore }}</span></h2>
       <div class="feedback-ai">
