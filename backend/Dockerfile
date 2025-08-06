@@ -1,16 +1,8 @@
 FROM python:3.12-slim
-
 WORKDIR /app
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY ./app /app/app
-COPY ./alembic /app/alembic
-COPY alembic.ini .
-
-COPY entrypoint.sh .
+COPY . .
 RUN chmod +x ./entrypoint.sh
-
-ENTRYPOINT ["./entrypoint.sh"]
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8000
+CMD ["./entrypoint.sh"]
